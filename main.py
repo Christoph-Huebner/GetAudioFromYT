@@ -1,6 +1,10 @@
 import argparse
+from downloader import Downloader
 
 def main():
+    '''
+    Main function to parse command line arguments and initiate the downloader.
+    '''
     parser = argparse.ArgumentParser(
         prog="GetAudioFromYT",
         description="Download audio from YouTube and convert it."
@@ -15,17 +19,16 @@ def main():
         help="Convert to the selected format after download"
     )
     parser.add_argument("-f", "--format",
-        choices=['mp3','wma','flac','aac','opus','alac'],
+        choices=Downloader.FORMAT_OPTIONS.keys(),
         default="mp3",
         help="Audio format (default: mp3)"
     )
-
     args = parser.parse_args()
-    downloader = downloader(
-        url=args.url,
-        convertAudio=args.convert_audio,
-        audioFormat=args.format
-    )
+
+    downloader = Downloader(
+        url = args.url,
+        convert_audio=args.convert_audio,
+        audioFormat=args.format)
     downloader.run()
 
 if __name__ == '__main__':

@@ -5,15 +5,22 @@ from pytubefix import YouTube
 from pytubefix.cli import on_progress
 from pytubefix.exceptions import RegexMatchError, VideoUnavailable
 
-class downloader:
-    def __init__(self, url: str=None, convertAudio:bool=True, audioFormat:str='mp3'):
+class Downloader:
+    FORMAT_OPTIONS = {
+        'mp3':  {'acodec': 'libmp3lame', 'audio_bitrate': '320k'},
+        'wma':  {'acodec': 'wmav2',       'audio_bitrate': '256k'},
+        'flac': {'acodec': 'flac',        'compression_level': 6},
+        'aac':  {'acodec': 'libfdk_aac',  'audio_bitrate': '256k'},
+        'opus': {'acodec': 'libopus',     'audio_bitrate': '128k'},
+        'alac': {'acodec': 'alac'},
+    }
+
+    def __init__(self, url: str=None, convert_audio:bool=True, audioFormat:str='mp3'):
         self.__url = url
-        self.__convertAudio = convertAudio
-        self.__audioFormat = audioFormat
+        self.__convert_audio = convert_audio
+        self.__audio_format = audioFormat
 
-        self.__audioFile = None
-
-        self.__providedAudioFormats = ['mp3', 'wma', 'flac', 'aac', 'opus', 'alac']
+        self.__audio_file = None
         self.__formatOptions = {
             'mp3':  {'acodec': 'libmp3lame',   'audio_bitrate': '320k'},
             'wma':  {'acodec': 'wmav2',        'audio_bitrate': '256k'},
@@ -23,49 +30,48 @@ class downloader:
             'alac': {'acodec': 'alac'}  ,
         }
 
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(asctime)s %(levelname)s %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S"
+        )
+
     def run(self):
         '''
         Downloads the audio from a YouTube video and converts it to a specified format.
         '''
-        if not self.__url:
-            logging("❌ No URL provided.")
-            return
-
-        if self.__convertAudio and self.__audioFormat not in self.__providedAudioFormats:
-            logging(f"❌ Invalid audio format '{self.__audioFormat}'. Supported formats are: {', '.join(self.__providedAudioFormats)}")
-            return
-
         try:
             yt = YouTube(self.__url, on_progress_callback=on_progress)
         except RegexMatchError:
-            logging("❌ Invalid YouTube URL.")
+            logging.error("❌ Invalid YouTube URL.")
             return
         except VideoUnavailable:
-            logging("❌ Video is unavailable or removed.")
+            logging.error("❌ Video is unavailable or removed.")
             return
 
-        audioStream = yt.streams.filter(only_audio=True).order_by('abr').desc().first()
-        self.__audioFile = audioStream.download()
+        audio_stream = yt.streams.filter(only_audio=True).order_by('abr').desc().first()
+        self.__audio_file = audio_stream.download(output_path='Files')
 
-        if self.__convertAudio:
-            audioFile = self.__convert()
+        if self.__convert_audio:
+            self.__convert()
 
-        logging(f"✅ Downloaded audio: {audioFile}")
+        logging.info(f"✅ Downloaded audio: {self.__audio_file}")
 
     def __convert(self):
         ''' Converts an audio file to the specified format using ffmpeg.'''
-        base = os.path.splitext(self.__audioFile)[0]
+        base = os.path.splitext(self.__audio_file)[0]
 
-        opts = self.__formatOptions.get(self.__audioFormat, {})
-        outputFile = f"{base}.{self.__audioFormat}"
+        opts = self.FORMAT_OPTIONS.get(self.__audio_format, {})
+        output_file = f"{base}.{self.__audio_format}"
         try:
             (
                 ffmpeg
-                .input(self.__audioFile)
-                .output(outputFile, format=self.__audioFormat, **opts, vn=None)
+                .input(self.__audio_file)
+                .output(output_file, format=self.__audio_format, **opts, vn=None)
                 .run(overwrite_output=True, quiet=True)
             )
-            return outputFile
+            os.remove(self.__audio_file)
+            self.__audio_file = output_file
         except ffmpeg.Error as e:
-            logging("❌ Conversion failed:", e)
+            logging.error("❌ Conversion failed:", e)
             return None
