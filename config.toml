@@ -1,0 +1,42 @@
+[format_options]
+
+  [format_options.mp3]
+  # MP3 (MPEG-1 or MPEG-2 Audio Layer III)
+  # Common encoder: libmp3lame; alternatives: libshine, fraunhofer
+  # Typical bitrates: 128k (medium), 192k (high), 320k (max)
+  acodec        = "libmp3lame"
+  audio_bitrate = "320k"
+
+  [format_options.wma]
+  # WMA (Windows Media Audio)
+  # Common encoder: wmav2; alternative: wmavoice (optimized for low-bitrate speech)
+  # Typical bitrates: 64k, 128k, 256k
+  acodec        = "wmav2"
+  audio_bitrate = "256k"
+
+  [format_options.flac]
+  # FLAC (Free Lossless Audio Codec)
+  # Compression levels range 0 (fastest, least compression) to 8 (slowest, best compression)
+  # Level 6 is a common trade-off; 5–7 are typical choices
+  acodec           = "flac"
+  compression_level = 6
+
+  [format_options.aac]
+  # AAC (Advanced Audio Coding)
+  # Common encoder: libfdk_aac; alternatives: native FFmpeg aac, faac
+  # Typical bitrates: 128k, 192k, 256k
+  acodec        = "libfdk_aac"
+  audio_bitrate = "256k"
+
+  [format_options.opus]
+  # OPUS (IETF‘s Opus interactive audio codec)
+  # Common encoder: libopus; alternatives: opusenc, ffopus
+  # Typical bitrates: 64k (speech), 96k, 128k (music), up to 256k
+  acodec        = "libopus"
+  audio_bitrate = "128k"
+
+  [format_options.alac]
+  # ALAC (Apple Lossless Audio Codec)
+  # Bitrate is variable (lossless); equivalent to original PCM
+  # No bitrate setting needed
+  acodec = "alac"

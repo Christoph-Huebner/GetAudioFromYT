@@ -4,16 +4,11 @@ import os
 from pytubefix import YouTube
 from pytubefix.cli import on_progress
 from pytubefix.exceptions import RegexMatchError, VideoUnavailable
+import toml
 
 class Downloader:
-    FORMAT_OPTIONS = {
-        'mp3':  {'acodec': 'libmp3lame', 'audio_bitrate': '320k'},
-        'wma':  {'acodec': 'wmav2',       'audio_bitrate': '256k'},
-        'flac': {'acodec': 'flac',        'compression_level': 6},
-        'aac':  {'acodec': 'libfdk_aac',  'audio_bitrate': '256k'},
-        'opus': {'acodec': 'libopus',     'audio_bitrate': '128k'},
-        'alac': {'acodec': 'alac'},
-    }
+    _cfg = toml.load("config.toml")
+    FORMAT_OPTIONS = _cfg["format_options"]
 
     def __init__(self, url: str=None, convert_audio:bool=True, audioFormat:str='mp3'):
         self.__url = url
@@ -21,14 +16,6 @@ class Downloader:
         self.__audio_format = audioFormat
 
         self.__audio_file = None
-        self.__formatOptions = {
-            'mp3':  {'acodec': 'libmp3lame',   'audio_bitrate': '320k'},
-            'wma':  {'acodec': 'wmav2',        'audio_bitrate': '256k'},
-            'flac': {'acodec': 'flac',         'compression_level': 6},
-            'aac':  {'acodec': 'libfdk_aac',   'audio_bitrate': '256k'},
-            'opus': {'acodec': 'libopus',      'audio_bitrate': '128k'},
-            'alac': {'acodec': 'alac'}  ,
-        }
 
         logging.basicConfig(
             level=logging.INFO,
