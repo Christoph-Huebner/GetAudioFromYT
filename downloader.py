@@ -37,7 +37,7 @@ class Downloader:
             return
 
         audio_stream = yt.streams.filter(only_audio=True).order_by('abr').desc().first()
-        self.__audio_file = audio_stream.download(output_path='Files')
+        self.__audio_file = audio_stream.download(output_path='files')
 
         if self.__convert_audio:
             self.__convert()

@@ -1,25 +1,43 @@
-## Installation Guide
+# GetAudioFromYT
 
-Follow these instructions to set up GetAudioFromYT on Windows, Linux, or macOS.
+A lightweight Python tool to download and convert YouTube audio streams into multiple formats.
+Supports configurable codecs and bitrates via a `config.toml` file.
 
-### Prerequisites
+## 1. Install Git (optional)
 
-- **PowerShell (Windows)**
-  - `PS-Admin>`: Start PowerShell as Administrator
-  - `PS>`: Start PowerShell as Standard User
-- **Terminal (Linux & macOS)**: Use your default shell (bash, zsh, etc.)
+Git is required if you want to clone the repository. You can install it as follows:
 
-### 1. Install Git (optional)
+- **Windows**:
 
-Download and install from:
+  1. Download and install from [https://git-scm.com/downloads](https://git-scm.com/downloads)
+  2. During installation, use the default settings.
 
-[https://git-scm.com/downloads](https://git-scm.com/downloads)
+- **Debian / Ubuntu**:
 
-Use the default settings during installation.
+  ```bash
+  sudo apt update
+  sudo apt install -y git
+  ```
 
----
+- **Arch Linux**:
 
-### 2. Project Directory Paths
+  ```bash
+  sudo pacman -Syu git
+  ```
+
+- **macOS (Homebrew)**:
+
+  ```bash
+  brew install git
+  ````
+
+Restart your shell and verify:
+
+````bash
+git --version
+````
+
+## 2. Project Directory Paths
 
 Use one of the following working directory paths depending on how you obtained the project:
 
@@ -55,16 +73,16 @@ After downloading and extracting the ZIP archive, note the `-main` suffix in the
   /Users/<youruser>/Downloads/GetAudioFromYT-main/GetAudioFromYT-main
   ```
 
-### 3. Download or Clone the Repository
+## 3. Download or Clone the Repository
 
-#### a) With Git
+### a) With Git
 
-```powershell
-PS> git clone https://github.com/Christoph-Huebner/GetAudioFromYT.git
-PS> cd GetAudioFromYT
+```bash
+git clone https://github.com/Christoph-Huebner/GetAudioFromYT.git
+cd GetAudioFromYT
 ```
 
-#### b) Without Git
+### b) Without Git
 
 1. Download the ZIP archive from: [https://github.com/Christoph-Huebner/GetAudioFromYT](https://github.com/Christoph-Huebner/GetAudioFromYT)
 2. Extract the archive.
@@ -74,87 +92,157 @@ PS> cd GetAudioFromYT
 cd GetAudioFromYT-main/GetAudioFromYT-main/
 ```
 
----
+## 4. Choose Your Setup
 
-### 4. Install Python
+From here you can proceed **manually** (without Docker - more difficult) or using **Docker**.
 
-Download and install from:
+### 4A. Manual Setup (no Docker)
 
-[https://www.python.org/downloads/](https://www.python.org/downloads/)
+**1. Install Python**
 
-Enable the following options during installation:
+- **Windows**:
+  1. Download the installer from https://www.python.org/downloads/
+  2. During install, enable:
+     - Install pip and py.exe with administrator privileges
+     - Add Python to PATH
+     - Disable path length limit
+  3. Open a new PowerShell and verify:
+     ```powershell
+     python --version
+     pip install --upgrade pip
+     ```
 
-- **Install pip and py.exe** with administrative privileges
-- **Add Python to PATH**
-- **Disable path length limit**
+- **Debian / Ubuntu**:
+  ```bash
+  sudo apt update
+  sudo apt install -y python3 python3-pip
+  python3 --version
+  pip3 install --upgrade pip
+  ```
 
-After installation, open a new shell as administrator and verify:
+- **Arch Linux**:
+  ```bash
+  sudo pacman -Syu python python-pip
+  python --version
+  pip install --upgrade pip
+  ```
 
-```powershell
-PS-Admin> python --version
-PS-Admin> pip install --upgrade pip
-```
+- **macOS (Homebrew)**:
+  ```bash
+  brew install python
+  python3 --version
+  pip3 install --upgrade pip
+  ```
 
----
+**2. Install FFmpeg**
 
-### 5. Install FFmpeg
+- **Windows**:
+  1. Download a build from https://www.gyan.dev/ffmpeg/builds/
+  2. Extract (bin, doc, etc.) to `C:\Program Files (x86)\ffmpeg`
+  3. Add to PATH in an elevated PowerShell:
+     ```powershell
+     $env = [Environment]::GetEnvironmentVariable('Path','Machine')
+     [Environment]::SetEnvironmentVariable('Path', "$env;C:\Program Files (x86)\ffmpeg\bin", 'Machine')
+     ```
+  4. Restart shell and verify:
+     ```powershell
+     ffmpeg -version
+     ```
 
-#### Windows
+- **Debian / Ubuntu**:
+  ```bash
+  sudo apt update
+  sudo apt install -y ffmpeg
+  ffmpeg -version
+  ```
 
-1. Download a stable build (not the most recent one) from: [https://www.gyan.dev/ffmpeg/builds/](https://www.gyan.dev/ffmpeg/builds/)
-2. Extract the archive.
-3. Copy the extracted `ffmpeg` folder to: `C:\\Program Files (x86)\\ffmpeg`
-4. In an Administrator shell, add FFmpeg to the system PATH:
+- **Arch Linux**:
+  ```bash
+  sudo pacman -Syu ffmpeg
+  ffmpeg -version
+  ```
 
-```powershell
-PS-Admin> $envVar = [Environment]::GetEnvironmentVariable('Path', 'Machine')
-PS-Admin> $newPath = "$envVar;C:\\Program Files (x86)\\ffmpeg\\bin"
-PS-Admin> [Environment]::SetEnvironmentVariable('Path', $newPath, 'Machine')
-```
+- **macOS (Homebrew)**:
+  ```bash
+  brew install ffmpeg
+  ffmpeg -version
+  ```
 
-#### Debian / Ubuntu
+  5. Restart your shell and verify:
+    ```bash
+    ffmpeg -version
+    ```
+
+**3. Install Python Packages**
+
+In your project directory (see section 2), run with administrative privileges:
 
 ```bash
-sudo apt update
-sudo apt install ffmpeg
+pip install -r pip-packages.txt
 ```
 
-#### Arch Linux
+### 4B. Docker Setup
 
-```bash
-sudo pacman -Syu ffmpeg
-```
+1. **Install Docker**
+   - **Windows (Docker Desktop)**
+     https://docs.docker.com/desktop/setup/install/windows-install/
+     - Download & install
+     - Reboot
+     - In Admin PowerShell, add yourself to the Docker group if needed:
+       ```powershell
+       Add-LocalGroupMember -Group "docker-users" -Member "<YourUser>"
+       ```
+   - **Debian/Ubuntu**
+     https://docs.docker.com/engine/install/debian/
+     ```bash
+     sudo apt update
+     sudo apt install -y ca-certificates curl gnupg lsb-release
+     # Add Docker’s GPG key & repository, then:
+     sudo apt update
+     sudo apt install -y docker-ce docker-ce-cli containerd.io
+     sudo usermod -aG docker $USER
+     ```
+   - **Arch Linux**
+     ```bash
+     sudo pacman -Syu docker
+     sudo systemctl enable --now docker
+     sudo usermod -aG docker $USER
+     ```
+   - **macOS (Docker Desktop)**
+     https://docs.docker.com/desktop/setup/install/macos/
+     - Install, then ensure Docker Desktop is running.
 
-#### macOS
+   After adding your user to the `docker`/`docker-users` group, **log out and log in again** or reboot.
 
-```bash
-brew install ffmpeg
-```
+2. **Build the Docker Image**
+   In the project root:
+   ```bash
+   docker build -t getaudiofromyt:latest .
+   ```
+   _Note: The first build may take a bit longer to pull base images and install dependencies._
 
-5. Restart your shell and verify:
+## 5. Test Run
 
-```bash
-ffmpeg -version
-```
+Execute a quick test to confirm everything works. The downloaded file will appear in the `files/` folder.
 
----
+- **Manual (no Docker)**
+  ```bash
+  python main.py "https://www.youtube.com/watch?v=E8T17Eg2wbM" --convert --format mp3
+  ```
 
-### 6. Install Python Packages
+- **Docker**
+  ```bash
+  docker run --rm -v "$(pwd)/files:/app/files" -v "$(pwd)/config.toml:/app/config.toml:ro" getaudiofromyt:latest "https://www.youtube.com/watch?v=E8T17Eg2wbM" --convert --format mp3
+  ```
 
-In your project directory (see section 2), run:
+## 6. Contribution
 
-```powershell
-PS-Admin> pip install -r pip-packages.txt
-```
+1. Fork the repo
+2. Create a branch (`git checkout -b feature/YourFeature`)
+3. Commit changes (`git commit -am "Add feature"`)
+4. Push (`git push origin feature/YourFeature`)
+5. Open a Pull Request
 
----
+## 7. License
 
-### 7. Test Run
-
-Execute a quick test to confirm everything works:
-
-```bash
-python main.py --url "https://www.youtube.com/watch?v=E8T17Eg2wbM" --convert --format mp3
-```
-
-The downloaded file will appear in the `files/` folder.
+This project is distributed under a **Non-Commercial** license. See [LICENSE](LICENSE) for details.
