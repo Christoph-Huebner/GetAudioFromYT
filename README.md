@@ -137,49 +137,48 @@ From here you can proceed **manually** (without Docker - more difficult) or usin
 **2. Install FFmpeg**
 
 - **Windows**:
-  1. Download a build from https://www.gyan.dev/ffmpeg/builds/
+  1. Download the last stable build (not the most recent one) from https://www.gyan.dev/ffmpeg/builds/
   2. Extract (bin, doc, etc.) to `C:\Program Files (x86)\ffmpeg`
   3. Add to PATH in an elevated PowerShell:
      ```powershell
      $env = [Environment]::GetEnvironmentVariable('Path','Machine')
      [Environment]::SetEnvironmentVariable('Path', "$env;C:\Program Files (x86)\ffmpeg\bin", 'Machine')
      ```
-  4. Restart shell and verify:
-     ```powershell
-     ffmpeg -version
-     ```
 
 - **Debian / Ubuntu**:
   ```bash
   sudo apt update
   sudo apt install -y ffmpeg
-  ffmpeg -version
   ```
 
 - **Arch Linux**:
   ```bash
   sudo pacman -Syu ffmpeg
-  ffmpeg -version
   ```
 
 - **macOS (Homebrew)**:
   ```bash
   brew install ffmpeg
-  ffmpeg -version
   ```
 
-  5. Restart your shell and verify:
-    ```bash
-    ffmpeg -version
-    ```
+Restart your shell and verify:
+```bash
+ffmpeg -version
+```
 
 **3. Install Python Packages**
 
 In your project directory (see section 2), run with administrative privileges:
 
-```bash
-pip install -r pip-packages.txt
-```
+- **Debian / Ubuntu & macOS (Homebrew)**:
+  ```bash
+  pip3 install -r pip-packages.txt
+  ```
+
+- **Windows & Arch Linux**:
+  ```bash
+  pip install -r pip-packages.txt
+  ```
 
 ### 4B. Docker Setup
 
@@ -214,21 +213,34 @@ pip install -r pip-packages.txt
 
    After adding your user to the `docker`/`docker-users` group, **log out and log in again** or reboot.
 
-2. **Build the Docker Image**
+2. **Check Docker**
+   Open a new Shell and verify if docker is available:
+   ```bash
+   docker --version
+   ```
+
+3. **Build the Docker Image**
    In the project root:
    ```bash
    docker build -t getaudiofromyt:latest .
    ```
-   _Note: The first build may take a bit longer to pull base images and install dependencies._
+   _Note: The first build may take a bit longer to pull base images and install dependencies. This step is required one time, if you don't delete the docker image._
 
 ## 5. Test Run
 
 Execute a quick test to confirm everything works. The downloaded file will appear in the `files/` folder.
 
 - **Manual (no Docker)**
-  ```bash
-  python main.py "https://www.youtube.com/watch?v=E8T17Eg2wbM" --convert --format mp3
-  ```
+
+  - **Debian / Ubuntu & macOS (Homebrew)**:
+    ```bash
+    python3 main.py "https://www.youtube.com/watch?v=E8T17Eg2wbM" --convert --format mp3
+    ```
+
+  - **Windows & Arch Linux**:
+    ```bash
+    python main.py "https://www.youtube.com/watch?v=E8T17Eg2wbM" --convert --format mp3
+    ```
 
 - **Docker**
   ```bash
