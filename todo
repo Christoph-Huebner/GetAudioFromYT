@@ -1,0 +1,3 @@
+- Komplette Überarbeitung (aller Dateien)
+- Anpassung der Readme (nicht git Teil kann weg)
+- Es muss sich generell die Frage gestellt werden, ob eine Konvertierung in ein anderes Format sinnvoll ist. Bei YT wird meist mit dem m4a Format gearbeitet und dies kann mit wenn flac ausgewählt wird verbessert werden. Maximal wenn etwas nur in ein bestimmten Format wie mp3 (ältere Geräte) oder alac (Apple) benötigt wird (Kompatibilität)
