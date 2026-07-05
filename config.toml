@@ -5,13 +5,13 @@
   # Common encoder: libmp3lame; alternatives: libshine, fraunhofer
   # Typical bitrates: 128k (medium), 192k (high), 320k (max)
   acodec        = "libmp3lame"
-  audio_bitrate = "320k"
+  audio_bitrate = "256k"
 
-  [format_options.wma]
-  # WMA (Windows Media Audio)
-  # Common encoder: wmav2; alternative: wmavoice (optimized for low-bitrate speech)
-  # Typical bitrates: 64k, 128k, 256k
-  acodec        = "wmav2"
+  [format_options.m4a]
+  # M4A (AAC audio in MPEG-4 container)
+  # Good compromise for YouTube audio: good quality with moderate file size
+  # Typical bitrates: 128k, 192k, 256k
+  acodec = "aac"
   audio_bitrate = "256k"
 
   [format_options.flac]
